@@ -12,19 +12,26 @@ class MainApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(title: const Text('Weather')),
+        appBar: AppBar(title: const Text('Wetter App')),
         body: Center(
-          child: FutureBuilder(
-            future: WeatherService.fetchData(),
+          child: FutureBuilder<double>(
+            future: WeatherService.fetchCurrentTemperature(),
             builder: (context, snapshot) {
               if (snapshot.hasData) {
-                List<String> data = snapshot.data as List<String>;
-
-                return ListView.builder(
-                  itemCount: data.length,
-                  itemBuilder: (context, index) {
-                    return Text(data[index]);
-                  },
+                return Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text('Aktuelle Temperatur: ${snapshot.data}°C'),
+                    const SizedBox(
+                        height: 20), // Abstand zwischen Text und Button
+                    TextButton(
+                      onPressed: () {
+                        // Hier kannst du die Aktion definieren, z. B. die Wetterdaten erneut abrufen
+                        print("Button gedrückt");
+                      },
+                      child: const Text('Aktualisieren'),
+                    ),
+                  ],
                 );
               } else if (snapshot.hasError) {
                 return const Text("Fehler aufgetreten");
