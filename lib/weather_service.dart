@@ -33,11 +33,12 @@ class WeatherService {
 */
 import 'dart:convert';
 import 'package:http/http.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class WeatherService {
   static Future<double> fetchCurrentTemperature() async {
     const uriString =
-        'https://api.open-meteo.com/v1/forecast?latitude=52.52&longitude=13.41&hourly=temperature_2m';
+        'https://api.open-meteo.com/v1/forecast?latitude=52.52437&longitude=13.41053&hourly=temperature_2m';
     final response = await get(Uri.parse(uriString));
 
     if (response.statusCode == 200) {
