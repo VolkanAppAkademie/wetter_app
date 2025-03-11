@@ -35,9 +35,11 @@ import 'dart:convert';
 import 'package:http/http.dart';
 
 class WeatherService {
-  static Future<double> fetchCurrentTemperature() async {
-    const uriString =
-        'https://api.open-meteo.com/v1/forecast?latitude=52.52437&longitude=13.41053&hourly=temperature_2m';
+  static Future<double> fetchCurrentTemperature(
+      String longitude, String latitude, String hour) async {
+    String uriString =
+        'https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&hourly=$hour';
+
     final response = await get(Uri.parse(uriString));
 
     if (response.statusCode == 200) {
@@ -47,7 +49,7 @@ class WeatherService {
       List<dynamic> temperatureData = forecast['hourly']['temperature_2m'];
 
       // Rückgabe der aktuellen Temperatur (erste Stunde)
-      return temperatureData[0].toDouble();
+      return temperatureData.last.toDouble();
     } else {
       throw Exception('Fehler beim Abrufen der Wetterdaten');
     }

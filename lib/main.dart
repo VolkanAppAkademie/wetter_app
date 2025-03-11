@@ -87,6 +87,7 @@ class _MainAppState extends State<MainApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData.dark(),
       home: Scaffold(
         appBar: AppBar(title: const Text('Wetter App')),
         body: Center(
