@@ -15,6 +15,7 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   late Future<double> _temperature;
+  double? _savedTemperature; // Variable für die gespeicherte Temperatur
 
   @override
   void initState() {
@@ -27,6 +28,10 @@ class _MainAppState extends State<MainApp> {
     final prefs = await SharedPreferences.getInstance();
     final savedTemperature = prefs.getDouble('temperature');
     if (savedTemperature != null) {
+      setState(() {
+        _savedTemperature =
+            savedTemperature; // Setze die gespeicherte Temperatur
+      });
       return savedTemperature; // Rückgabe der gespeicherten Temperatur
     } else {
       return WeatherService
@@ -42,7 +47,21 @@ class _MainAppState extends State<MainApp> {
         'temperature', newTemperature); // Speichern der neuen Temperatur
 
     setState(() {
-      _temperature = Future.value(newTemperature);
+      _savedTemperature =
+          newTemperature; // Setze die neue gespeicherte Temperatur
+      _temperature =
+          Future.value(newTemperature); // Setze die neue aktuelle Temperatur
+    });
+  }
+
+  // Lösche die gespeicherte Historie aus den SharedPreferences
+  void _deleteHistory() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove('temperature'); // Löschen der gespeicherten Temperatur
+    setState(() {
+      _savedTemperature = null; // Lösche die gespeicherte Temperatur aus der UI
+      _temperature = WeatherService
+          .fetchCurrentTemperature(); // Hole die aktuelle Temperatur
     });
   }
 
@@ -61,10 +80,17 @@ class _MainAppState extends State<MainApp> {
                   children: [
                     const Text('Berlin:'),
                     Text('Aktuelle Temperatur: ${snapshot.data}°C'),
+                    if (_savedTemperature != null)
+                      Text('Gespeicherte Temperatur: $_savedTemperature°C'),
                     const SizedBox(height: 20),
                     TextButton(
                       onPressed: _refreshTemperature,
                       child: const Text('Aktualisieren'),
+                    ),
+                    const SizedBox(height: 20),
+                    TextButton(
+                      onPressed: _deleteHistory,
+                      child: const Text('Historie Löschen'),
                     ),
                   ],
                 );

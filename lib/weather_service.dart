@@ -33,7 +33,6 @@ class WeatherService {
 */
 import 'dart:convert';
 import 'package:http/http.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class WeatherService {
   static Future<double> fetchCurrentTemperature() async {
