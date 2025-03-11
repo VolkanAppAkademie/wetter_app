@@ -1,4 +1,9 @@
-/*import 'dart:convert';
+/*
+
+Übung
+------
+
+import 'dart:convert';
 import 'package:http/http.dart';
 
 class WeatherService {
