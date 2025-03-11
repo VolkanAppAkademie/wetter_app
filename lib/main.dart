@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:wetter_app/stadt.dart';
 import 'package:wetter_app/weather_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -34,14 +35,19 @@ class _MainAppState extends State<MainApp> {
       });
       return savedTemperature; // Rückgabe der gespeicherten Temperatur
     } else {
-      return WeatherService
-          .fetchCurrentTemperature(); // Abrufen der aktuellen Temperatur
+      return WeatherService.fetchCurrentTemperature(
+          _selectedItem?.latitude ?? "52",
+          _selectedItem?.longitude ?? "19",
+          "temperature_2m"); // Abrufen der aktuellen Temperatur
     }
   }
 
   // Aktualisiere die Temperatur und speichere sie in den SharedPreferences
   void _refreshTemperature() async {
-    double newTemperature = await WeatherService.fetchCurrentTemperature();
+    double newTemperature = await WeatherService.fetchCurrentTemperature(
+        _selectedItem?.latitude ?? "52",
+        _selectedItem?.longitude ?? "19",
+        "temperature_2m");
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(
         'temperature', newTemperature); // Speichern der neuen Temperatur
@@ -60,10 +66,23 @@ class _MainAppState extends State<MainApp> {
     await prefs.remove('temperature'); // Löschen der gespeicherten Temperatur
     setState(() {
       _savedTemperature = null; // Lösche die gespeicherte Temperatur aus der UI
-      _temperature = WeatherService
-          .fetchCurrentTemperature(); // Hole die aktuelle Temperatur
+      _temperature = WeatherService.fetchCurrentTemperature(
+          _selectedItem?.latitude ?? "52",
+          _selectedItem?.longitude ?? "19",
+          "temperature_2m"); // Hole die aktuelle Temperatur
     });
   }
+
+// Die Liste der Dropdown-Elemente
+  final List<Stadt> _items = [
+    Stadt(latitude: "51.607", longitude: "13.3124", name: "München"),
+    Stadt(latitude: "48.7823", longitude: "9.177", name: "Stuttgart"),
+    Stadt(latitude: "53.5507", longitude: "9.993", name: "Hamburg"),
+    Stadt(latitude: "48.7823", longitude: "9.177", name: "Stuttgart"),
+  ];
+
+  // Das aktuell ausgewählte Element
+  Stadt? _selectedItem;
 
   @override
   Widget build(BuildContext context) {
@@ -73,13 +92,30 @@ class _MainAppState extends State<MainApp> {
         body: Center(
           child: FutureBuilder<double>(
             future: _temperature,
-            builder: (context, snapshot) {
-              if (snapshot.hasData) {
+            builder: (context, index) {
+              if (index.hasData) {
                 return Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text('Berlin:'),
-                    Text('Aktuelle Temperatur: ${snapshot.data}°C'),
+                    DropdownButton<Stadt>(
+                      value: _selectedItem,
+                      hint: Text('Stadt'),
+                      onChanged: (Stadt? newValue) {
+                        setState(() {
+                          _selectedItem = newValue;
+                        });
+                        print(
+                            "newValue ${newValue?.latitude},${newValue?.longitude}${newValue?.name}");
+                      },
+                      items: _items.map<DropdownMenuItem<Stadt>>((Stadt value) {
+                        return DropdownMenuItem<Stadt>(
+                          value: value,
+                          child: Text(value.name),
+                        );
+                      }).toList(),
+                    ),
+                    Text(_selectedItem?.name ?? ""),
+                    Text('Aktuelle Temperatur: ${index.data}°C'),
                     if (_savedTemperature != null)
                       Text('Gespeicherte Temperatur: $_savedTemperature°C'),
                     const SizedBox(height: 20),
@@ -94,7 +130,7 @@ class _MainAppState extends State<MainApp> {
                     ),
                   ],
                 );
-              } else if (snapshot.hasError) {
+              } else if (index.hasError) {
                 return const Text("Fehler aufgetreten");
               } else {
                 return const CircularProgressIndicator();
