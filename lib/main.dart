@@ -75,10 +75,10 @@ class _MainAppState extends State<MainApp> {
 
 // Die Liste der Dropdown-Elemente
   final List<Stadt> _items = [
-    Stadt(latitude: "51.607", longitude: "13.3124", name: "München"),
-    Stadt(latitude: "48.7823", longitude: "9.177", name: "Stuttgart"),
-    Stadt(latitude: "53.5507", longitude: "9.993", name: "Hamburg"),
-    Stadt(latitude: "48.7823", longitude: "9.177", name: "Stuttgart"),
+    Stadt(latitude: "52.5244", longitude: "13.4105", name: "Berlin"),
+    Stadt(latitude: "48.8534", longitude: "2.3488", name: "Paris"),
+    Stadt(latitude: "51.5085", longitude: "-0.1257", name: "London"),
+    Stadt(latitude: "40.7143", longitude: "-74.006", name: "New York"),
   ];
 
   // Das aktuell ausgewählte Element
