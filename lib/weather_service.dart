@@ -22,7 +22,7 @@ class WeatherService {
         "hourly"]); //Zugriff auf den Wert vom Schlüssel hourly -> Map<String, List<dynamic>>
     print(forecast["hourly"]
         ["time"]); //Zugriff auf den Wert vom Schlüssel time -> List<String>
-    // Zugriff auf den ersten Wert in der Liste die zum Schlüssel time gehört
+    //Zugriff auf den ersten Wert in der Liste die zum Schlüssel time gehört
     print(forecast["hourly"]["time"][0]);
     // aus ieinem Grund muss man noch die Daten abschreiben bevor man sie returnen kann,
     //deswegen machen wir das in den folgenden Zeilen mit einer for-Schleife
@@ -41,20 +41,20 @@ import 'package:http/http.dart';
 
 class WeatherService {
   static Future<double> fetchCurrentTemperature(
-      String longitude, String latitude, String hour) async {
+      String latitude, String longitude) async {
     String uriString =
-        'https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&hourly=$hour';
-
+        'https://api.open-meteo.com/v1/forecast?latitude=$latitude&longitude=$longitude&current=temperature_2m,is_day,showers,wind_direction_10m,rain';
     final response = await get(Uri.parse(uriString));
 
     if (response.statusCode == 200) {
       final forecast = json.decode(response.body);
 
       // Zugriff auf die Temperaturdaten
-      List<dynamic> temperatureData = forecast['hourly']['temperature_2m'];
+      dynamic temperatureData = forecast['current']['temperature_2m'];
+      print("result $forecast");
 
-      // Rückgabe der aktuellen Temperatur (erste Stunde)
-      return temperatureData.last.toDouble();
+      // Rückgabe der aktuellen Temperatur
+      return temperatureData.toDouble();
     } else {
       throw Exception('Fehler beim Abrufen der Wetterdaten');
     }

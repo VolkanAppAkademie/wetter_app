@@ -36,18 +36,18 @@ class _MainAppState extends State<MainApp> {
       return savedTemperature; // Rückgabe der gespeicherten Temperatur
     } else {
       return WeatherService.fetchCurrentTemperature(
-          _selectedItem?.latitude ?? "52",
-          _selectedItem?.longitude ?? "19",
-          "temperature_2m"); // Abrufen der aktuellen Temperatur
+        _selectedItem?.latitude ?? "52",
+        _selectedItem?.longitude ?? "19",
+      ); // Abrufen der aktuellen Temperatur
     }
   }
 
   // Aktualisiere die Temperatur und speichere sie in den SharedPreferences
   void _refreshTemperature() async {
     double newTemperature = await WeatherService.fetchCurrentTemperature(
-        _selectedItem?.latitude ?? "52",
-        _selectedItem?.longitude ?? "19",
-        "temperature_2m");
+      _selectedItem?.latitude ?? "52",
+      _selectedItem?.longitude ?? "19",
+    );
     final prefs = await SharedPreferences.getInstance();
     await prefs.setDouble(
         'temperature', newTemperature); // Speichern der neuen Temperatur
@@ -67,9 +67,9 @@ class _MainAppState extends State<MainApp> {
     setState(() {
       _savedTemperature = null; // Lösche die gespeicherte Temperatur aus der UI
       _temperature = WeatherService.fetchCurrentTemperature(
-          _selectedItem?.latitude ?? "52",
-          _selectedItem?.longitude ?? "19",
-          "temperature_2m"); // Hole die aktuelle Temperatur
+        _selectedItem?.latitude ?? "52",
+        _selectedItem?.longitude ?? "19",
+      ); // Hole die aktuelle Temperatur
     });
   }
 
